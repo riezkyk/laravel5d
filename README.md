@@ -110,7 +110,7 @@ docs/
 
 ## Author
 
-Muhammad Dzakwan Najmi — NPM 2410010454 — TI 5C REG BJB
+Riezky Kurniawan — NPM 2410010564 — TI 5C REG BJB
 
 ## License
 
