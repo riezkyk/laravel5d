@@ -1,21 +1,21 @@
-# Database Design — Entity Relationship Diagram
+# Database Design — Entity Relationship Diagram (FishMarket Penjualan Ikan)
 
-This document describes the database schema of **Habitude** and every Eloquent relationship used in the project.
+Dokumen ini menjelaskan skema database aplikasi **FishMarket — Penjualan Ikan** dan setiap relasi Eloquent yang digunakan dalam proyek.
 
 ## 1. Entity Relationship Diagram
 
 ```mermaid
 erDiagram
     USERS ||--o| PROFILES : "has one"
-    USERS ||--o{ HABITS : "owns"
-    USERS ||--o{ MOOD_ENTRIES : "records"
-    USERS ||--o{ JOURNAL_ENTRIES : "writes"
-    USERS ||--o{ ACHIEVEMENT_USER : "earns"
+    USERS ||--o{ HABITS : "owns/sells (Fish Products)"
+    USERS ||--o{ MOOD_ENTRIES : "records buyer review"
+    USERS ||--o{ JOURNAL_ENTRIES : "writes daily sales report"
+    USERS ||--o{ ACHIEVEMENT_USER : "earns badge"
     ACHIEVEMENTS ||--o{ ACHIEVEMENT_USER : "awarded via"
 
     CATEGORIES ||--o{ HABITS : "groups"
-    HABITS ||--o{ HABIT_LOGS : "has"
-    HABITS ||--o{ REMINDERS : "has"
+    HABITS ||--o{ HABIT_LOGS : "has sales log"
+    HABITS ||--o{ REMINDERS : "has restock reminder"
     HABITS ||--o{ HABIT_TAG : "tagged via"
     TAGS ||--o{ HABIT_TAG : "labels"
 
@@ -46,22 +46,22 @@ erDiagram
         bigint id PK
         bigint user_id FK
         bigint category_id FK
-        string name
+        string name "Produk Ikan"
         text description
-        int target_count
-        string unit
+        int target_count "Stok/Target Penjualan"
+        string unit "Satuan (ekor, kg, paket)"
         boolean is_active
     }
     HABIT_LOGS {
         bigint id PK
         bigint habit_id FK
         date logged_date
-        int value
+        int value "Jumlah Terjual"
         text note
     }
     TAGS {
         bigint id PK
-        string name UK
+        string name UK "e.g. segar, terlaris, diskon"
     }
     HABIT_TAG {
         bigint habit_id FK
@@ -78,7 +78,7 @@ erDiagram
         bigint id PK
         bigint user_id FK
         date entry_date
-        tinyint mood_level "1-5"
+        tinyint mood_level "1-5 (Tingkat Kepuasan Pembeli)"
         string note
     }
     JOURNAL_ENTRIES {
@@ -86,8 +86,8 @@ erDiagram
         bigint user_id FK
         bigint mood_entry_id FK "nullable"
         date entry_date
-        string title
-        text content
+        string title "Judul Laporan Penjualan"
+        text content "Catatan Penjualan"
     }
     ACHIEVEMENTS {
         bigint id PK
@@ -102,42 +102,34 @@ erDiagram
     }
 ```
 
-## 2. Relationship Summary
+## 2. Ringkasan Relasi Eloquent
 
-| Type | Relationship | Eloquent |
+| Tipe Relasi | Pemetaan Objek Penjualan Ikan | Model Eloquent |
 |---|---|---|
-| One-to-One | `User` ↔ `Profile` | `hasOne` / `belongsTo` |
-| One-to-One (optional) | `MoodEntry` ↔ `JournalEntry` | `hasOne` / `belongsTo` |
-| One-to-Many | `User` → `Habit` | `hasMany` / `belongsTo` |
-| One-to-Many | `User` → `MoodEntry` | `hasMany` / `belongsTo` |
-| One-to-Many | `User` → `JournalEntry` | `hasMany` / `belongsTo` |
-| One-to-Many | `Category` → `Habit` | `hasMany` / `belongsTo` |
-| One-to-Many | `Habit` → `HabitLog` | `hasMany` / `belongsTo` |
-| One-to-Many | `Habit` → `Reminder` | `hasMany` / `belongsTo` |
-| Many-to-Many | `Habit` ↔ `Tag` (pivot `habit_tag`) | `belongsToMany` |
-| Many-to-Many + pivot data | `User` ↔ `Achievement` (pivot `achievement_user`, column `earned_at`) | `belongsToMany` + `withPivot` |
-| Has-Many-Through | `User` → `HabitLog` through `Habit` | `hasManyThrough` |
-| Has-Many-Through | `Category` → `HabitLog` through `Habit` | `hasManyThrough` |
+| One-to-One | Profil Penjual ↔ User | `User` ↔ `Profile` (`hasOne` / `belongsTo`) |
+| One-to-One (optional) | Catatan Laporan Penjualan ↔ Ulasan Pembeli | `MoodEntry` ↔ `JournalEntry` (`hasOne` / `belongsTo`) |
+| One-to-Many | Penjual → Katalog Produk Ikan | `User` → `Habit` (`hasMany` / `belongsTo`) |
+| One-to-Many | Penjual → Ulasan Pembeli Harian | `User` → `MoodEntry` (`hasMany` / `belongsTo`) |
+| One-to-Many | Penjual → Laporan Penjualan Harian | `User` → `JournalEntry` (`hasMany` / `belongsTo`) |
+| One-to-Many | Kategori Ikan → Produk Ikan | `Category` → `Habit` (`hasMany` / `belongsTo`) |
+| One-to-Many | Produk Ikan → Log Penjualan Harian | `Habit` → `HabitLog` (`hasMany` / `belongsTo`) |
+| One-to-Many | Produk Ikan → Pengingat Restok Produk | `Habit` → `Reminder` (`hasMany` / `belongsTo`) |
+| Many-to-Many | Produk Ikan ↔ Tag (*segar*, *diskon*, *terlaris*) | `Habit` ↔ `Tag` (pivot `habit_tag`, `belongsToMany`) |
+| Many-to-Many + Pivot | Seller ↔ Badge Lencana Pencapaian (`earned_at`) | `User` ↔ `Achievement` (`belongsToMany` + `withPivot`) |
+| Has-Many-Through | Seller → Total Log Penjualan melalui Produk Ikan | `User` → `HabitLog` through `Habit` (`hasManyThrough`) |
+| Has-Many-Through | Kategori Ikan → Log Penjualan melalui Produk Ikan | `Category` → `HabitLog` through `Habit` (`hasManyThrough`) |
 
-## 3. Categories (seeded)
+## 3. Kategori Penjualan Ikan (Seeded)
 
-The `categories` table is populated by a seeder with the eight built-in themes:
+Tabel `categories` diisi oleh seeder dengan 8 kategori produk ikan:
 
-| Name | Slug |
-|---|---|
-| Health & Fitness | `health-fitness` |
-| Mindfulness | `mindfulness` |
-| Productivity | `productivity` |
-| Better Sleep | `better-sleep` |
-| Stay Hydrated | `stay-hydrated` |
-| Read More | `read-more` |
-| Social Connections | `social-connections` |
-| Self Care | `self-care` |
-
-## 4. Design Notes
-
-- **Unique constraints:** `profiles.user_id`, `categories.slug`, `tags.name`, and (`habit_logs.habit_id`, `habit_logs.logged_date`) so a habit has one log per day.
-- **Daily mood:** (`mood_entries.user_id`, `mood_entries.entry_date`) is unique, giving one mood per user per day.
-- **Journal ↔ mood link:** `journal_entries.mood_entry_id` is nullable and unique, so a journal entry can exist without a mood check-in, but a mood has at most one journal entry.
-- **Cascade rules:** deleting a user cascades to their profile, habits, logs, reminders, moods, journals, and achievement links. Deleting a category is restricted while habits still use it.
-- **Streaks** are computed from `habit_logs` and are not stored.
+| Nama Kategori | Slug | Icon |
+|---|---|---|
+| Ikan Hias | `ikan-hias` | 🐠 |
+| Ikan Konsumsi | `ikan-konsumsi` | 🐟 |
+| Ikan Laut | `ikan-laut` | 🌊 |
+| Ikan Tawar | `ikan-tawar` | 💧 |
+| Bibit & Benih Ikan | `bibit-benih-ikan` | 🌱 |
+| Pakan Ikan | `pakan-ikan` | 📦 |
+| Perlengkapan Akuarium | `perlengkapan-akuarium` | 🫧 |
+| Obat & Nutrisi Ikan | `obat-nutrisi-ikan` | 💊 |

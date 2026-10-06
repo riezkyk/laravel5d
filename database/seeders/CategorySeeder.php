@@ -8,19 +8,19 @@ use Illuminate\Database\Seeder;
 class CategorySeeder extends Seeder
 {
     /**
-     * Seed the built-in habit categories.
+     * Seed the built-in fish sales categories.
      */
     public function run(): void
     {
         $categories = [
-            ['Health & Fitness', 'health-fitness', '💪', '#ef4444'],
-            ['Mindfulness', 'mindfulness', '🧘', '#8b5cf6'],
-            ['Productivity', 'productivity', '🎯', '#f59e0b'],
-            ['Better Sleep', 'better-sleep', '😴', '#6366f1'],
-            ['Stay Hydrated', 'stay-hydrated', '💧', '#0ea5e9'],
-            ['Read More', 'read-more', '📚', '#10b981'],
-            ['Social Connections', 'social-connections', '🤝', '#ec4899'],
-            ['Self Care', 'self-care', '🌸', '#f97316'],
+            ['Ikan Hias', 'ikan-hias', '🐠', '#3b82f6'],
+            ['Ikan Konsumsi', 'ikan-konsumsi', '🐟', '#10b981'],
+            ['Ikan Laut', 'ikan-laut', '🌊', '#06b6d4'],
+            ['Ikan Tawar', 'ikan-tawar', '💧', '#6366f1'],
+            ['Bibit & Benih Ikan', 'bibit-benih-ikan', '🌱', '#8b5cf6'],
+            ['Pakan Ikan', 'pakan-ikan', '📦', '#f59e0b'],
+            ['Perlengkapan Akuarium', 'perlengkapan-akuarium', '🫧', '#ec4899'],
+            ['Obat & Nutrisi Ikan', 'obat-nutrisi-ikan', '💊', '#ef4444'],
         ];
 
         foreach ($categories as [$name, $slug, $icon, $color]) {

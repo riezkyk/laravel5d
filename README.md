@@ -1,117 +1,103 @@
-# Habitude — Habit Tracker
+# FishMarket — Aplikasi Penjualan Ikan
 
-Habitude is a habit tracking web application built with **Laravel**, **Blade**, and **Tailwind CSS**. It is the final semester project for the *Object-Oriented Programming 2 (PBO2)* course, with a focus on designing and implementing **database table relationships** using Eloquent ORM.
+FishMarket adalah web aplikasi manajemen dan sistem penjualan ikan berbasis **Laravel**, **Blade**, dan **Tailwind CSS**. Proyek ini dibuat untuk tugas mata kuliah *Pemrograman Berbasis Objek 2 (PBO2)* dengan fokus utama pada perancangan dan implementasi **relasi tabel database** menggunakan Eloquent ORM.
 
-## Features
+## Fitur Utama
 
-- Track daily habits grouped into eight life categories:
-  Health & Fitness, Mindfulness, Productivity, Better Sleep, Stay Hydrated, Read More, Social Connections, and Self Care
-- Daily progress logging with a numeric value and optional note
-- **Mood check-in** for each day (1–5 scale)
-- **Daily journal** that can be linked to the day's mood
-- Habit reminders with custom time and weekdays
-- Tags for flexible habit organization
-- Achievements and badges (for example, a 7-day streak)
-- Dashboard with today's habits, streaks, and per-category progress
+- Pengelolaan katalog produk ikan yang terbagi dalam 8 kategori:
+  Ikan Hias, Ikan Konsumsi, Ikan Laut, Ikan Tawar, Bibit & Benih Ikan, Pakan Ikan, Perlengkapan Akuarium, dan Obat & Nutrisi Ikan
+- Pencatatan transaksi dan log penjualan harian produk ikan
+- **Ulasan kepuasan pembeli** harian (skala 1–5)
+- **Laporan harian toko** yang dapat dihubungkan dengan ulasan transaksi
+- Pengingat restok produk (reminders) dengan opsi hari & jam khusus
+- Tagging produk ikan untuk fleksibilitas pencarian (e.g. *segar*, *terlaris*, *diskon*, *grade_A*)
+- Lencana pencapaian seller (achievements/badges)
+- Dashboard rekap penjualan, produk terlaris, dan progress per kategori
 
-## Database Design
+## Desain Database
 
-The full schema and every relationship are documented with Mermaid diagrams in
+Skema lengkap database dan seluruh relasi tabel didokumentasikan dengan diagram Mermaid di
 [`docs/database/erd.md`](docs/database/erd.md).
 
 ```mermaid
 erDiagram
     USERS ||--o| PROFILES : "has one"
-    USERS ||--o{ HABITS : owns
-    USERS ||--o{ MOOD_ENTRIES : records
-    USERS ||--o{ JOURNAL_ENTRIES : writes
-    USERS }o--o{ ACHIEVEMENTS : earns
-    CATEGORIES ||--o{ HABITS : groups
-    HABITS ||--o{ HABIT_LOGS : has
-    HABITS ||--o{ REMINDERS : has
+    USERS ||--o{ HABITS : "owns/sells"
+    USERS ||--o{ MOOD_ENTRIES : "records sale"
+    USERS ||--o{ JOURNAL_ENTRIES : "writes report"
+    USERS }o--o{ ACHIEVEMENTS : "earns badge"
+    CATEGORIES ||--o{ HABITS : "groups"
+    HABITS ||--o{ HABIT_LOGS : "sales log"
+    HABITS ||--o{ REMINDERS : "restock reminder"
     HABITS }o--o{ TAGS : "tagged with"
     MOOD_ENTRIES ||--o| JOURNAL_ENTRIES : "may have"
 ```
 
-### Relationships Covered
+### Relasi Eloquent yang Diterapkan
 
-| Type | Example |
+| Tipe Relasi | Contoh Kasus pada Aplikasi Penjualan Ikan |
 |---|---|
 | One-to-One | `User` ↔ `Profile`, `MoodEntry` ↔ `JournalEntry` |
-| One-to-Many | `User` → `Habit`, `Category` → `Habit`, `Habit` → `HabitLog` |
-| Many-to-Many | `Habit` ↔ `Tag` |
-| Many-to-Many with pivot data | `User` ↔ `Achievement` (`earned_at`) |
-| Has-Many-Through | `User` → `HabitLog` through `Habit` |
+| One-to-Many | `User` → `Habit` (Produk Ikan), `Category` → `Habit`, `Habit` → `HabitLog` (Log Penjualan) |
+| Many-to-Many | `Habit` (Produk Ikan) ↔ `Tag` |
+| Many-to-Many dengan Pivot Data | `User` ↔ `Achievement` (`earned_at`) |
+| Has-Many-Through | `User` → `HabitLog` melalui `Habit`, `Category` → `HabitLog` melalui `Habit` |
 
 ## Tech Stack
 
-- PHP 8.3+ and Laravel
+- PHP 8.3+ dan Laravel
 - Blade templates
 - Tailwind CSS (via Vite)
-- MySQL or SQLite
-- Laravel MCP for AI-assisted development
+- MySQL / SQLite
 
-## Getting Started
+## Cara Menjalankan Aplikasi
 
 ```bash
-# Clone the repository
-git clone https://github.com/dzakwannajmi/PBO2_LARAVEL_5C.git
-cd PBO2_LARAVEL_5C
+# Clone repositori
+git clone https://github.com/riezkyk/laravel5d.git
+cd laravel5d
 
-# Install dependencies
+# Install dependensi
 composer install
 npm install
 
-# Configure the environment
+# Konfigurasi environment
 cp .env.example .env
 php artisan key:generate
 
-# Create the schema and seed the categories
+# Jalankan migrasi dan seeder data penjualan ikan
 php artisan migrate --seed
 
-# Start the development servers
+# Jalankan server
 npm run dev
 php artisan serve
 ```
 
-Then open <http://localhost:8000>.
+Akses aplikasi di <http://localhost:8000>.
 
-## Progress
+## Progres Pengerjaan
 
-Phase progress (P01, ...) broken into jobs (J1, J2, ...) with proof, status, and completion dates: [`docs/progress`](docs/progress/P01-database-design.md).
+Catatan progres per fase (P01, ...) dan job (J1, J2, ...) lengkap dengan bukti commit: [`docs/progress/P01-database-design.md`](docs/progress/P01-database-design.md).
 
-## Contributing / Forking
-
-New to forking the course repository? See the step-by-step guide for Windows and macOS (in Indonesian): [`docs/guides/fork-guide.md`](docs/guides/fork-guide.md).
-
-## Project Structure
+## Struktur Proyek
 
 ```
-app/Models/        Eloquent models and relationships
+app/Models/        Model Eloquent dan definisi relasi
 database/
-  migrations/      Table definitions
-  factories/       Fake data generators
-  seeders/         Categories and sample data
-resources/views/   Blade templates
+  migrations/      Definisi tabel database
+  factories/       Generator data dummy penjualan ikan
+  seeders/         Kategori dan sampel produk ikan
+resources/views/   Template Blade
 docs/
-  database/        ERD and relationship documentation
-  guides/          Fork and Git workflow guide
-  progress/        Phase tracker (P01, ...)
+  database/        ERD dan dokumentasi relasi database Penjualan Ikan
+  guides/          Panduan Git dan Pull Request
+  progress/        Laporan progres per fase
 ```
-
-## Roadmap
-
-- [x] Database design and documentation
-- [x] Migrations, models, factories, and seeders
-- [ ] Authentication
-- [ ] Habit, mood, and journal CRUD
-- [ ] Dashboard with streaks and category progress
-- [ ] Reminders and achievements
 
 ## Author
 
 Riezky Kurniawan — NPM 2410010564 — TI 5D REG BJB
 
-## License
+## Lisensi
 
-Released under the [MIT License](https://opensource.org/licenses/MIT).
+Dirilis di bawah [MIT License](https://opensource.org/licenses/MIT).
