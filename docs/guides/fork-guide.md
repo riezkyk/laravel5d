@@ -165,7 +165,7 @@ Dosen memeriksa banyak PR, jadi buat judul dan deskripsi dalam **bahasa Inggris*
 ```
 Contoh:
 ```
-[Assignment 1] Table Relationships: Habit Tracker - Riezky Kurniawan - 2410010564 - TI 5C REG BJB
+[Assignment 1] Table Relationships: Habit Tracker - Riezky Kurniawan - 2410010564 - TI 5D REG BJB
 ```
 Untuk tugas berikutnya cukup ganti nomor dan topiknya. Judul boleh diubah kapan saja lewat tombol **Edit** atau `gh pr edit <nomor> --repo <repo-dosen> --title "..."`.
 

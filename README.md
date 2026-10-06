@@ -110,7 +110,7 @@ docs/
 
 ## Author
 
-Riezky Kurniawan — NPM 2410010564 — TI 5C REG BJB
+Riezky Kurniawan — NPM 2410010564 — TI 5D REG BJB
 
 ## License
 
