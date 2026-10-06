@@ -7,19 +7,19 @@ Dokumen ini menjelaskan skema database aplikasi **FishMarket — Penjualan Ikan*
 ```mermaid
 erDiagram
     USERS ||--o| PROFILES : "has one"
-    USERS ||--o{ HABITS : "owns/sells (Fish Products)"
-    USERS ||--o{ MOOD_ENTRIES : "records buyer review"
-    USERS ||--o{ JOURNAL_ENTRIES : "writes daily sales report"
-    USERS ||--o{ ACHIEVEMENT_USER : "earns badge"
-    ACHIEVEMENTS ||--o{ ACHIEVEMENT_USER : "awarded via"
+    USERS ||--o{ FISHES : "owns/sells (Produk Ikan)"
+    USERS ||--o{ CUSTOMER_REVIEWS : "records review"
+    USERS ||--o{ SALES_REPORTS : "writes report"
+    USERS ||--o{ BADGE_USER : "earns"
+    BADGES ||--o{ BADGE_USER : "awarded via"
 
-    CATEGORIES ||--o{ HABITS : "groups"
-    HABITS ||--o{ HABIT_LOGS : "has sales log"
-    HABITS ||--o{ REMINDERS : "has restock reminder"
-    HABITS ||--o{ HABIT_TAG : "tagged via"
-    TAGS ||--o{ HABIT_TAG : "labels"
+    CATEGORIES ||--o{ FISHES : "groups"
+    FISHES ||--o{ SALES_LOGS : "sales log"
+    FISHES ||--o{ RESTOCK_REMINDERS : "restock reminder"
+    FISHES ||--o{ FISH_TAG : "tagged via"
+    TAGS ||--o{ FISH_TAG : "labels"
 
-    MOOD_ENTRIES ||--o| JOURNAL_ENTRIES : "may have"
+    CUSTOMER_REVIEWS ||--o| SALES_REPORTS : "may have"
 
     USERS {
         bigint id PK
@@ -42,19 +42,19 @@ erDiagram
         string icon
         string color
     }
-    HABITS {
+    FISHES {
         bigint id PK
         bigint user_id FK
         bigint category_id FK
         string name "Produk Ikan"
         text description
-        int target_count "Stok/Target Penjualan"
+        int stock "Stok Produk"
         string unit "Satuan (ekor, kg, paket)"
         boolean is_active
     }
-    HABIT_LOGS {
+    SALES_LOGS {
         bigint id PK
-        bigint habit_id FK
+        bigint fish_id FK
         date logged_date
         int value "Jumlah Terjual"
         text note
@@ -63,41 +63,41 @@ erDiagram
         bigint id PK
         string name UK "e.g. segar, terlaris, diskon"
     }
-    HABIT_TAG {
-        bigint habit_id FK
+    FISH_TAG {
+        bigint fish_id FK
         bigint tag_id FK
     }
-    REMINDERS {
+    RESTOCK_REMINDERS {
         bigint id PK
-        bigint habit_id FK
+        bigint fish_id FK
         time remind_at
         json days_of_week
         boolean is_enabled
     }
-    MOOD_ENTRIES {
+    CUSTOMER_REVIEWS {
         bigint id PK
         bigint user_id FK
         date entry_date
-        tinyint mood_level "1-5 (Tingkat Kepuasan Pembeli)"
+        tinyint rating "1-5 (Kepuasan Pembeli)"
         string note
     }
-    JOURNAL_ENTRIES {
+    SALES_REPORTS {
         bigint id PK
         bigint user_id FK
-        bigint mood_entry_id FK "nullable"
+        bigint customer_review_id FK "nullable"
         date entry_date
         string title "Judul Laporan Penjualan"
-        text content "Catatan Penjualan"
+        text content "Detail Laporan"
     }
-    ACHIEVEMENTS {
+    BADGES {
         bigint id PK
         string name
         text description
         string criteria
     }
-    ACHIEVEMENT_USER {
+    BADGE_USER {
         bigint user_id FK
-        bigint achievement_id FK
+        bigint badge_id FK
         timestamp earned_at
     }
 ```
@@ -107,17 +107,17 @@ erDiagram
 | Tipe Relasi | Pemetaan Objek Penjualan Ikan | Model Eloquent |
 |---|---|---|
 | One-to-One | Profil Penjual ↔ User | `User` ↔ `Profile` (`hasOne` / `belongsTo`) |
-| One-to-One (optional) | Catatan Laporan Penjualan ↔ Ulasan Pembeli | `MoodEntry` ↔ `JournalEntry` (`hasOne` / `belongsTo`) |
-| One-to-Many | Penjual → Katalog Produk Ikan | `User` → `Habit` (`hasMany` / `belongsTo`) |
-| One-to-Many | Penjual → Ulasan Pembeli Harian | `User` → `MoodEntry` (`hasMany` / `belongsTo`) |
-| One-to-Many | Penjual → Laporan Penjualan Harian | `User` → `JournalEntry` (`hasMany` / `belongsTo`) |
-| One-to-Many | Kategori Ikan → Produk Ikan | `Category` → `Habit` (`hasMany` / `belongsTo`) |
-| One-to-Many | Produk Ikan → Log Penjualan Harian | `Habit` → `HabitLog` (`hasMany` / `belongsTo`) |
-| One-to-Many | Produk Ikan → Pengingat Restok Produk | `Habit` → `Reminder` (`hasMany` / `belongsTo`) |
-| Many-to-Many | Produk Ikan ↔ Tag (*segar*, *diskon*, *terlaris*) | `Habit` ↔ `Tag` (pivot `habit_tag`, `belongsToMany`) |
-| Many-to-Many + Pivot | Seller ↔ Badge Lencana Pencapaian (`earned_at`) | `User` ↔ `Achievement` (`belongsToMany` + `withPivot`) |
-| Has-Many-Through | Seller → Total Log Penjualan melalui Produk Ikan | `User` → `HabitLog` through `Habit` (`hasManyThrough`) |
-| Has-Many-Through | Kategori Ikan → Log Penjualan melalui Produk Ikan | `Category` → `HabitLog` through `Habit` (`hasManyThrough`) |
+| One-to-One (optional) | Catatan Laporan Penjualan ↔ Ulasan Pembeli | `CustomerReview` ↔ `SalesReport` (`hasOne` / `belongsTo`) |
+| One-to-Many | Penjual → Katalog Produk Ikan | `User` → `Fish` (`hasMany` / `belongsTo`) |
+| One-to-Many | Penjual → Ulasan Pembeli Harian | `User` → `CustomerReview` (`hasMany` / `belongsTo`) |
+| One-to-Many | Penjual → Laporan Penjualan Harian | `User` → `SalesReport` (`hasMany` / `belongsTo`) |
+| One-to-Many | Kategori Ikan → Produk Ikan | `Category` → `Fish` (`hasMany` / `belongsTo`) |
+| One-to-Many | Produk Ikan → Log Penjualan Harian | `Fish` → `SalesLog` (`hasMany` / `belongsTo`) |
+| One-to-Many | Produk Ikan → Pengingat Restok Produk | `Fish` → `RestockReminder` (`hasMany` / `belongsTo`) |
+| Many-to-Many | Produk Ikan ↔ Tag (*segar*, *diskon*, *terlaris*) | `Fish` ↔ `Tag` (pivot `fish_tag`, `belongsToMany`) |
+| Many-to-Many + Pivot | Seller ↔ Lencana Pencapaian (`earned_at`) | `User` ↔ `Badge` (`belongsToMany` + `withPivot` via `badge_user`) |
+| Has-Many-Through | Seller → Total Log Penjualan melalui Produk Ikan | `User` → `SalesLog` through `Fish` (`hasManyThrough`) |
+| Has-Many-Through | Kategori Ikan → Log Penjualan melalui Produk Ikan | `Category` → `SalesLog` through `Fish` (`hasManyThrough`) |
 
 ## 3. Kategori Penjualan Ikan (Seeded)
 

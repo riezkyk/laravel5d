@@ -6,12 +6,12 @@ FishMarket adalah web aplikasi manajemen dan sistem penjualan ikan berbasis **La
 
 - Pengelolaan katalog produk ikan yang terbagi dalam 8 kategori:
   Ikan Hias, Ikan Konsumsi, Ikan Laut, Ikan Tawar, Bibit & Benih Ikan, Pakan Ikan, Perlengkapan Akuarium, dan Obat & Nutrisi Ikan
-- Pencatatan transaksi dan log penjualan harian produk ikan
-- **Ulasan kepuasan pembeli** harian (skala 1–5)
-- **Laporan harian toko** yang dapat dihubungkan dengan ulasan transaksi
-- Pengingat restok produk (reminders) dengan opsi hari & jam khusus
+- Pencatatan transaksi dan log penjualan harian produk ikan (`SalesLog`)
+- **Ulasan kepuasan pembeli** harian (`CustomerReview`, skala 1–5 bintang)
+- **Laporan harian toko** (`SalesReport`) yang dapat dihubungkan dengan ulasan transaksi
+- Pengingat restok produk (`RestockReminder`) dengan opsi hari & jam khusus
 - Tagging produk ikan untuk fleksibilitas pencarian (e.g. *segar*, *terlaris*, *diskon*, *grade_A*)
-- Lencana pencapaian seller (achievements/badges)
+- Lencana pencapaian seller (`Badge` / achievements)
 - Dashboard rekap penjualan, produk terlaris, dan progress per kategori
 
 ## Desain Database
@@ -22,26 +22,26 @@ Skema lengkap database dan seluruh relasi tabel didokumentasikan dengan diagram 
 ```mermaid
 erDiagram
     USERS ||--o| PROFILES : "has one"
-    USERS ||--o{ HABITS : "owns/sells"
-    USERS ||--o{ MOOD_ENTRIES : "records sale"
-    USERS ||--o{ JOURNAL_ENTRIES : "writes report"
-    USERS }o--o{ ACHIEVEMENTS : "earns badge"
-    CATEGORIES ||--o{ HABITS : "groups"
-    HABITS ||--o{ HABIT_LOGS : "sales log"
-    HABITS ||--o{ REMINDERS : "restock reminder"
-    HABITS }o--o{ TAGS : "tagged with"
-    MOOD_ENTRIES ||--o| JOURNAL_ENTRIES : "may have"
+    USERS ||--o{ FISHES : "owns/sells"
+    USERS ||--o{ CUSTOMER_REVIEWS : "records review"
+    USERS ||--o{ SALES_REPORTS : "writes report"
+    USERS }o--o{ BADGES : "earns badge"
+    CATEGORIES ||--o{ FISHES : "groups"
+    FISHES ||--o{ SALES_LOGS : "sales log"
+    FISHES ||--o{ RESTOCK_REMINDERS : "restock reminder"
+    FISHES }o--o{ TAGS : "tagged with"
+    CUSTOMER_REVIEWS ||--o| SALES_REPORTS : "may have"
 ```
 
 ### Relasi Eloquent yang Diterapkan
 
 | Tipe Relasi | Contoh Kasus pada Aplikasi Penjualan Ikan |
 |---|---|
-| One-to-One | `User` ↔ `Profile`, `MoodEntry` ↔ `JournalEntry` |
-| One-to-Many | `User` → `Habit` (Produk Ikan), `Category` → `Habit`, `Habit` → `HabitLog` (Log Penjualan) |
-| Many-to-Many | `Habit` (Produk Ikan) ↔ `Tag` |
-| Many-to-Many dengan Pivot Data | `User` ↔ `Achievement` (`earned_at`) |
-| Has-Many-Through | `User` → `HabitLog` melalui `Habit`, `Category` → `HabitLog` melalui `Habit` |
+| One-to-One | `User` ↔ `Profile`, `CustomerReview` ↔ `SalesReport` |
+| One-to-Many | `User` → `Fish` (Produk Ikan), `Category` → `Fish`, `Fish` → `SalesLog` (Log Penjualan) |
+| Many-to-Many | `Fish` (Produk Ikan) ↔ `Tag` via `fish_tag` |
+| Many-to-Many dengan Pivot Data | `User` ↔ `Badge` (`earned_at`) via `badge_user` |
+| Has-Many-Through | `User` → `SalesLog` melalui `Fish`, `Category` → `SalesLog` melalui `Fish` |
 
 ## Tech Stack
 
@@ -82,9 +82,9 @@ Catatan progres per fase (P01, ...) dan job (J1, J2, ...) lengkap dengan bukti c
 ## Struktur Proyek
 
 ```
-app/Models/        Model Eloquent dan definisi relasi
+app/Models/        Model Eloquent dan definisi relasi Penjualan Ikan
 database/
-  migrations/      Definisi tabel database
+  migrations/      Definisi tabel database Penjualan Ikan
   factories/       Generator data dummy penjualan ikan
   seeders/         Kategori dan sampel produk ikan
 resources/views/   Template Blade
