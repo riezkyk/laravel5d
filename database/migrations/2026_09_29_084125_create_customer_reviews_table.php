@@ -11,16 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('habits', function (Blueprint $table) {
+        Schema::create('customer_reviews', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('category_id')->constrained()->restrictOnDelete();
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->unsignedInteger('target_count')->default(1);
-            $table->string('unit')->default('times');
-            $table->boolean('is_active')->default(true);
+            $table->date('entry_date');
+            $table->unsignedTinyInteger('rating')->comment('1-5 rating scale');
+            $table->string('note')->nullable();
             $table->timestamps();
+
+            $table->unique(['user_id', 'entry_date']);
         });
     }
 
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('habits');
+        Schema::dropIfExists('customer_reviews');
     }
 };

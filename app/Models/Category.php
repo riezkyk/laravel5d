@@ -13,13 +13,13 @@ class Category extends Model
 {
     use HasFactory;
 
-    public function habits(): HasMany
+    public function fishes(): HasMany
     {
-        return $this->hasMany(Habit::class);
+        return $this->hasMany(Fish::class);
     }
 
-    public function habitLogs(): HasManyThrough
+    public function salesLogs(): HasManyThrough
     {
-        return $this->hasManyThrough(HabitLog::class, Habit::class);
+        return $this->hasManyThrough(SalesLog::class, Fish::class);
     }
 }

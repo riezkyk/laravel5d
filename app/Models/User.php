@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,14 +16,8 @@ use Illuminate\Notifications\Notifiable;
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -39,28 +31,28 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class);
     }
 
-    public function habits(): HasMany
+    public function fishes(): HasMany
     {
-        return $this->hasMany(Habit::class);
+        return $this->hasMany(Fish::class);
     }
 
-    public function habitLogs(): HasManyThrough
+    public function salesLogs(): HasManyThrough
     {
-        return $this->hasManyThrough(HabitLog::class, Habit::class);
+        return $this->hasManyThrough(SalesLog::class, Fish::class);
     }
 
-    public function moodEntries(): HasMany
+    public function customerReviews(): HasMany
     {
-        return $this->hasMany(MoodEntry::class);
+        return $this->hasMany(CustomerReview::class);
     }
 
-    public function journalEntries(): HasMany
+    public function salesReports(): HasMany
     {
-        return $this->hasMany(JournalEntry::class);
+        return $this->hasMany(SalesReport::class);
     }
 
-    public function achievements(): BelongsToMany
+    public function badges(): BelongsToMany
     {
-        return $this->belongsToMany(Achievement::class)->withPivot('earned_at');
+        return $this->belongsToMany(Badge::class)->withPivot('earned_at');
     }
 }

@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reminders', function (Blueprint $table) {
+        Schema::create('restock_reminders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('habit_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('fish_id')->constrained('fishes')->cascadeOnDelete();
             $table->time('remind_at');
             $table->json('days_of_week')->nullable();
             $table->boolean('is_enabled')->default(true);
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reminders');
+        Schema::dropIfExists('restock_reminders');
     }
 };

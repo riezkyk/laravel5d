@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-#[Fillable(['user_id', 'entry_date', 'mood_level', 'note'])]
-class MoodEntry extends Model
+#[Fillable(['user_id', 'entry_date', 'rating', 'note'])]
+class CustomerReview extends Model
 {
     use HasFactory;
 
@@ -23,8 +23,8 @@ class MoodEntry extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function journalEntry(): HasOne
+    public function salesReport(): HasOne
     {
-        return $this->hasOne(JournalEntry::class);
+        return $this->hasOne(SalesReport::class);
     }
 }

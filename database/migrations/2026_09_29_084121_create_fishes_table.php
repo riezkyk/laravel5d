@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('journal_entries', function (Blueprint $table) {
+        Schema::create('fishes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('mood_entry_id')->nullable()->unique()->constrained()->nullOnDelete();
-            $table->date('entry_date');
-            $table->string('title');
-            $table->text('content');
+            $table->foreignId('category_id')->constrained()->restrictOnDelete();
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->unsignedInteger('stock')->default(1);
+            $table->string('unit')->default('ekor');
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('journal_entries');
+        Schema::dropIfExists('fishes');
     }
 };

@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('achievement_user', function (Blueprint $table) {
+        Schema::create('sales_reports', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('achievement_id')->constrained()->cascadeOnDelete();
-            $table->timestamp('earned_at')->useCurrent();
-
-            $table->primary(['user_id', 'achievement_id']);
+            $table->foreignId('customer_review_id')->nullable()->unique()->constrained('customer_reviews')->nullOnDelete();
+            $table->date('entry_date');
+            $table->string('title');
+            $table->text('content');
+            $table->timestamps();
         });
     }
 
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('achievement_user');
+        Schema::dropIfExists('sales_reports');
     }
 };

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 #[Fillable(['name', 'description', 'criteria'])]
-class Achievement extends Model
+class Badge extends Model
 {
     use HasFactory;
 

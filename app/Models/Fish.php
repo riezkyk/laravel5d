@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['user_id', 'category_id', 'name', 'description', 'target_count', 'unit', 'is_active'])]
-class Habit extends Model
+#[Fillable(['user_id', 'category_id', 'name', 'description', 'stock', 'unit', 'is_active'])]
+class Fish extends Model
 {
     use HasFactory;
+
+    protected $table = 'fishes';
 
     protected function casts(): array
     {
@@ -31,16 +33,16 @@ class Habit extends Model
 
     public function logs(): HasMany
     {
-        return $this->hasMany(HabitLog::class);
+        return $this->hasMany(SalesLog::class);
     }
 
-    public function reminders(): HasMany
+    public function restockReminders(): HasMany
     {
-        return $this->hasMany(Reminder::class);
+        return $this->hasMany(RestockReminder::class);
     }
 
     public function tags(): BelongsToMany
     {
-        return $this->belongsToMany(Tag::class);
+        return $this->belongsToMany(Tag::class, 'fish_tag');
     }
 }

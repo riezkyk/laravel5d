@@ -7,18 +7,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['habit_id', 'logged_date', 'value', 'note'])]
-class HabitLog extends Model
+#[Fillable(['fish_id', 'remind_at', 'days_of_week', 'is_enabled'])]
+class RestockReminder extends Model
 {
     use HasFactory;
 
     protected function casts(): array
     {
-        return ['logged_date' => 'date'];
+        return ['days_of_week' => 'array', 'is_enabled' => 'boolean'];
     }
 
-    public function habit(): BelongsTo
+    public function fish(): BelongsTo
     {
-        return $this->belongsTo(Habit::class);
+        return $this->belongsTo(Fish::class);
     }
 }

@@ -12,8 +12,8 @@ class Tag extends Model
 {
     use HasFactory;
 
-    public function habits(): BelongsToMany
+    public function fishes(): BelongsToMany
     {
-        return $this->belongsToMany(Habit::class);
+        return $this->belongsToMany(Fish::class, 'fish_tag');
     }
 }

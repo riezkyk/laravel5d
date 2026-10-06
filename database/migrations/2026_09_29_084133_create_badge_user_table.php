@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mood_entries', function (Blueprint $table) {
-            $table->id();
+        Schema::create('badge_user', function (Blueprint $table) {
+            $table->foreignId('badge_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->date('entry_date');
-            $table->unsignedTinyInteger('mood_level');
-            $table->string('note')->nullable();
-            $table->timestamps();
-
-            $table->unique(['user_id', 'entry_date']);
+            $table->timestamp('earned_at')->nullable();
+            $table->primary(['badge_id', 'user_id']);
         });
     }
 
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mood_entries');
+        Schema::dropIfExists('badge_user');
     }
 };

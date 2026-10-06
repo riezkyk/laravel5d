@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Models\Achievement;
+use App\Models\Badge;
 use App\Models\Category;
-use App\Models\Habit;
-use App\Models\HabitLog;
-use App\Models\JournalEntry;
-use App\Models\MoodEntry;
+use App\Models\CustomerReview;
+use App\Models\Fish;
 use App\Models\Profile;
-use App\Models\Reminder;
+use App\Models\RestockReminder;
+use App\Models\SalesLog;
+use App\Models\SalesReport;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -28,142 +28,142 @@ class DatabaseRelationsTest extends TestCase
         $this->assertTrue($profile->user->is($user));
     }
 
-    public function test_user_has_many_habits_and_habit_belongs_to_user(): void
+    public function test_user_has_many_fishes_and_fish_belongs_to_user(): void
     {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        $habit = Habit::factory()->create([
+        $fish = Fish::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
         ]);
 
-        $this->assertTrue($user->habits->contains($habit));
-        $this->assertTrue($habit->user->is($user));
+        $this->assertTrue($user->fishes->contains($fish));
+        $this->assertTrue($fish->user->is($user));
     }
 
-    public function test_category_has_many_habits_and_habit_belongs_to_category(): void
+    public function test_category_has_many_fishes_and_fish_belongs_to_category(): void
     {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        $habit = Habit::factory()->create([
+        $fish = Fish::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
         ]);
 
-        $this->assertTrue($category->habits->contains($habit));
-        $this->assertTrue($habit->category->is($category));
+        $this->assertTrue($category->fishes->contains($fish));
+        $this->assertTrue($fish->category->is($category));
     }
 
-    public function test_habit_has_many_logs_and_log_belongs_to_habit(): void
+    public function test_fish_has_many_sales_logs_and_sales_log_belongs_to_fish(): void
     {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        $habit = Habit::factory()->create([
+        $fish = Fish::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
         ]);
-        $log = HabitLog::factory()->create(['habit_id' => $habit->id]);
+        $log = SalesLog::factory()->create(['fish_id' => $fish->id]);
 
-        $this->assertTrue($habit->logs->contains($log));
-        $this->assertTrue($log->habit->is($habit));
+        $this->assertTrue($fish->logs->contains($log));
+        $this->assertTrue($log->fish->is($fish));
     }
 
-    public function test_user_has_many_through_habit_logs(): void
+    public function test_user_has_many_through_sales_logs(): void
     {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        $habit = Habit::factory()->create([
+        $fish = Fish::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
         ]);
-        $log = HabitLog::factory()->create(['habit_id' => $habit->id]);
+        $log = SalesLog::factory()->create(['fish_id' => $fish->id]);
 
-        $this->assertTrue($user->habitLogs->contains($log));
+        $this->assertTrue($user->salesLogs->contains($log));
     }
 
-    public function test_category_has_many_through_habit_logs(): void
+    public function test_category_has_many_through_sales_logs(): void
     {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        $habit = Habit::factory()->create([
+        $fish = Fish::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
         ]);
-        $log = HabitLog::factory()->create(['habit_id' => $habit->id]);
+        $log = SalesLog::factory()->create(['fish_id' => $fish->id]);
 
-        $this->assertTrue($category->habitLogs->contains($log));
+        $this->assertTrue($category->salesLogs->contains($log));
     }
 
-    public function test_habit_has_many_reminders_and_reminder_belongs_to_habit(): void
+    public function test_fish_has_many_restock_reminders_and_reminder_belongs_to_fish(): void
     {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        $habit = Habit::factory()->create([
+        $fish = Fish::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
         ]);
-        $reminder = Reminder::factory()->create(['habit_id' => $habit->id]);
+        $reminder = RestockReminder::factory()->create(['fish_id' => $fish->id]);
 
-        $this->assertTrue($habit->reminders->contains($reminder));
-        $this->assertTrue($reminder->habit->is($habit));
+        $this->assertTrue($fish->restockReminders->contains($reminder));
+        $this->assertTrue($reminder->fish->is($fish));
     }
 
-    public function test_habit_belongs_to_many_tags_and_tag_belongs_to_many_habits(): void
+    public function test_fish_belongs_to_many_tags_and_tag_belongs_to_many_fishes(): void
     {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        $habit = Habit::factory()->create([
+        $fish = Fish::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
         ]);
         $tag = Tag::factory()->create();
 
-        $habit->tags()->attach($tag->id);
+        $fish->tags()->attach($tag->id);
 
-        $this->assertTrue($habit->tags->contains($tag));
-        $this->assertTrue($tag->habits->contains($habit));
+        $this->assertTrue($fish->tags->contains($tag));
+        $this->assertTrue($tag->fishes->contains($fish));
     }
 
-    public function test_user_has_many_mood_entries_and_mood_entry_belongs_to_user(): void
+    public function test_user_has_many_customer_reviews_and_customer_review_belongs_to_user(): void
     {
         $user = User::factory()->create();
-        $mood = MoodEntry::factory()->create(['user_id' => $user->id]);
+        $review = CustomerReview::factory()->create(['user_id' => $user->id]);
 
-        $this->assertTrue($user->moodEntries->contains($mood));
-        $this->assertTrue($mood->user->is($user));
+        $this->assertTrue($user->customerReviews->contains($review));
+        $this->assertTrue($review->user->is($user));
     }
 
-    public function test_user_has_many_journal_entries_and_journal_entry_belongs_to_user(): void
+    public function test_user_has_many_sales_reports_and_sales_report_belongs_to_user(): void
     {
         $user = User::factory()->create();
-        $journal = JournalEntry::factory()->create(['user_id' => $user->id]);
+        $report = SalesReport::factory()->create(['user_id' => $user->id]);
 
-        $this->assertTrue($user->journalEntries->contains($journal));
-        $this->assertTrue($journal->user->is($user));
+        $this->assertTrue($user->salesReports->contains($report));
+        $this->assertTrue($report->user->is($user));
     }
 
-    public function test_mood_entry_has_one_journal_entry_and_journal_entry_belongs_to_mood_entry(): void
+    public function test_customer_review_has_one_sales_report_and_sales_report_belongs_to_customer_review(): void
     {
         $user = User::factory()->create();
-        $mood = MoodEntry::factory()->create(['user_id' => $user->id]);
-        $journal = JournalEntry::factory()->create([
+        $review = CustomerReview::factory()->create(['user_id' => $user->id]);
+        $report = SalesReport::factory()->create([
             'user_id' => $user->id,
-            'mood_entry_id' => $mood->id,
+            'customer_review_id' => $review->id,
         ]);
 
-        $this->assertTrue($mood->journalEntry->is($journal));
-        $this->assertTrue($journal->moodEntry->is($mood));
+        $this->assertTrue($review->salesReport->is($report));
+        $this->assertTrue($report->customerReview->is($review));
     }
 
-    public function test_user_belongs_to_many_achievements_with_pivot(): void
+    public function test_user_belongs_to_many_badges_with_pivot(): void
     {
         $user = User::factory()->create();
-        $achievement = Achievement::factory()->create();
+        $badge = Badge::factory()->create();
 
-        $user->achievements()->attach($achievement->id, ['earned_at' => now()]);
+        $user->badges()->attach($badge->id, ['earned_at' => now()]);
 
-        $this->assertTrue($user->achievements->contains($achievement));
-        $this->assertNotNull($user->achievements->first()->pivot->earned_at);
-        $this->assertTrue($achievement->users->contains($user));
+        $this->assertTrue($user->badges->contains($badge));
+        $this->assertNotNull($user->badges->first()->pivot->earned_at);
+        $this->assertTrue($badge->users->contains($user));
     }
 }

@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['user_id', 'mood_entry_id', 'entry_date', 'title', 'content'])]
-class JournalEntry extends Model
+#[Fillable(['user_id', 'customer_review_id', 'entry_date', 'title', 'content'])]
+class SalesReport extends Model
 {
     use HasFactory;
 
@@ -22,8 +22,8 @@ class JournalEntry extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function moodEntry(): BelongsTo
+    public function customerReview(): BelongsTo
     {
-        return $this->belongsTo(MoodEntry::class);
+        return $this->belongsTo(CustomerReview::class);
     }
 }

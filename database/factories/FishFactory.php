@@ -3,29 +3,24 @@
 namespace Database\Factories;
 
 use App\Models\Category;
-use App\Models\Habit;
+use App\Models\Fish;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Habit>
+ * @extends Factory<Fish>
  */
-class HabitFactory extends Factory
+class FishFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
             'user_id' => User::factory(),
             'category_id' => Category::factory(),
-            'name' => fake()->words(3, true),
+            'name' => fake()->words(2, true).' Fish',
             'description' => fake()->sentence(),
-            'target_count' => fake()->numberBetween(1, 8),
-            'unit' => fake()->randomElement(['times', 'glasses', 'pages', 'minutes']),
+            'stock' => fake()->numberBetween(10, 100),
+            'unit' => fake()->randomElement(['ekor', 'kg', 'paket', 'unit']),
             'is_active' => true,
         ];
     }

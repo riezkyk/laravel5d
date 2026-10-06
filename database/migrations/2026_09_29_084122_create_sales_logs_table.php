@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('habit_logs', function (Blueprint $table) {
+        Schema::create('sales_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('habit_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('fish_id')->constrained('fishes')->cascadeOnDelete();
             $table->date('logged_date');
             $table->unsignedInteger('value')->default(1);
             $table->text('note')->nullable();
             $table->timestamps();
 
-            $table->unique(['habit_id', 'logged_date']);
+            $table->unique(['fish_id', 'logged_date']);
         });
     }
 
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('habit_logs');
+        Schema::dropIfExists('sales_logs');
     }
 };
